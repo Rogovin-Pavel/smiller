@@ -7,8 +7,15 @@ export default function Home() {
   const { data, isLoading } = api.posts.getAll.useQuery();
   const user = useUser();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return <div>Something went wrong</div>;
+  const getData = () => {
+    if (isLoading) return <div>Loading...</div>;
+    if (!data) return <div>Something went wrong</div>;
+    return [...data, ...data]?.map((post) => (
+      <div key={post.id} className="border-b border-slate-400 p-8">
+        {post.content}
+      </div>
+    ));
+  };
 
   return (
     <>
@@ -28,13 +35,7 @@ export default function Home() {
             {!!user.isSignedIn && <SignOutButton />}
           </div>
           <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
-          <div className="flex flex-col">
-            {[...data, ...data]?.map((post) => (
-              <div key={post.id} className="border-b border-slate-400 p-8">
-                {post.content}
-              </div>
-            ))}
-          </div>
+          <div className="flex flex-col">{getData()}</div>
         </div>
       </main>
     </>
